@@ -1,9 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using UniqloMVC.Models;
 
 namespace UniqloMVC.DataAccess
 {
-    public class UniqloDbContext:DbContext
+    public class UniqloDbContext:IdentityDbContext<User>
     {
         public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
