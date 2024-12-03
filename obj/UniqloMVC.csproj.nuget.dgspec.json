@@ -58,6 +58,10 @@
             "Microsoft.VisualStudio.Web.CodeGeneration.Design": {
               "target": "Package",
               "version": "[8.0.7, )"
+            },
+            "Unipluss.Sign.Client": {
+              "target": "Package",
+              "version": "[1.0.2876, )"
             }
           },
           "imports": [

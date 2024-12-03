@@ -21,11 +21,10 @@ namespace UniqloMVC
 
             app.MapControllerRoute(
             name: "areas",
-            pattern: "{area:exists}/{controller=Dashboard}/{action=Index}/{id?}"
-          );
+            pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
             app.MapControllerRoute(
-                name:"default", 
+                name: "default",
                 pattern: "{controller=Home}/{action=Index}/{Id?}");
 
             app.Run();

@@ -1,4 +1,4 @@
-﻿namespace UniqloMVC.ViewModel
+﻿namespace UniqloMVC.ViewModel.Slider
 {
     public class SliderItemVM
     {

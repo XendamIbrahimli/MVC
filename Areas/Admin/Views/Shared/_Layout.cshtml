@@ -42,7 +42,7 @@
 
             <!-- Nav Item - Dashboard -->
             <li class="nav-item">
-                <a class="nav-link" href="index.html">
+                <a class="nav-link" asp-action="Index" asp-controller="Dashboard">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
                     <span>Dashboard</span>
                 </a>
@@ -51,9 +51,25 @@
             <!-- Divider -->
             <hr class="sidebar-divider d-none d-md-block">
             <li class="nav-item">
-                <a class="nav-link"asp-action="Index" asp-controller="Slider">
+                <a class="nav-link"asp-action="Index" asp-controller="Product">
                     <i class="fas fa-fw fa-tachometer-alt"></i>
-                    <span>Slider</span>
+                    <span>Products</span>
+                </a>
+            </li>
+
+            <hr class="sidebar-divider d-none d-md-block">
+            <li class="nav-item">
+                <a class="nav-link" asp-action="Index" asp-controller="Slider">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Sliders</span>
+                </a>
+            </li>
+
+            <hr class="sidebar-divider d-none d-md-block">
+            <li class="nav-item">
+                <a class="nav-link" asp-action="Index" asp-controller="Category">
+                    <i class="fas fa-fw fa-tachometer-alt"></i>
+                    <span>Categories</span>
                 </a>
             </li>
 
