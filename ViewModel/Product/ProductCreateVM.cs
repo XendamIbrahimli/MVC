@@ -11,7 +11,7 @@ namespace UniqloMVC.ViewModel.Product
         public int Quantity { get; set; }
         public int Discount { get; set; }
         public IFormFile CoverFile { get; set; }
-        public IEnumerable<IFormFile> OtherFiles { get; set; }
+        public ICollection<IFormFile> OtherFiles { get; set; }
         public int? CategoryId { get; set; }
     }
 }

@@ -1,12 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using UniqloMVC.DataAccess;
+using UniqloMVC.Helpers;
 using UniqloMVC.Models;
 using UniqloMVC.ViewModel.Category;
 
 namespace UniqloMVC.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles =ConstantRoles.Category)]
     public class CategoryController(UniqloDbContext _context ):Controller
     {
         public async Task<IActionResult> Index()

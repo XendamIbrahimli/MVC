@@ -13,7 +13,9 @@ namespace UniqloMVC.Models
         public string CoverImage { get; set; }=null!;
         public int? CategoryId { get; set;}
         public Category? Category { get; set; }
-        public ICollection<Product>? Images { get; set; }
+        public ICollection<ProductImage>? Images { get; set; }
+        public ICollection<ProductRating> Ratings { get; set; }
+        public ICollection<ProductComment> Comments { get; set; }
 
         public static implicit operator Product(ProductCreateVM vm)
         {

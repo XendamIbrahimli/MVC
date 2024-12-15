@@ -1,8 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.Blazor;
+using System.Reflection.Metadata;
 using UniqloMVC.DataAccess;
 using UniqloMVC.Extentions;
+using UniqloMVC.Helpers;
 using UniqloMVC.Models;
 using UniqloMVC.ViewModel.Product;
 
@@ -10,6 +13,7 @@ using UniqloMVC.ViewModel.Product;
 namespace UniqloMVC.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles=ConstantRoles.Product)]
     public class ProductController(UniqloDbContext _context, IWebHostEnvironment _env) : Controller
     {
         public async Task<IActionResult> Index()
@@ -25,16 +29,17 @@ namespace UniqloMVC.Areas.Admin.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(ProductCreateVM vm)
         {
+            ViewBag.Categories = await _context.Categories.Where(x => !x.IsDeleted).ToListAsync();
             if (vm.OtherFiles != null && vm.OtherFiles.Any())
             {
-                if (!vm.OtherFiles.All(x => x.IsValidType("Image")))
+                if (vm.OtherFiles.All(x => x.IsValidType("Image")))
                 {
                     var fileNames=vm.OtherFiles.Where(x => !x.IsValidType("Image")).Select(x => x.FileName);
                     ModelState.AddModelError("OtherFiles", string.Join(", ", fileNames)+ " are(is) not image");
                 }
-                if (!vm.OtherFiles.All(x => x.IsValidSize(30)))
+                if (vm.OtherFiles.All(x => x.IsValidSize(3000)))
                 {
-                    var fileNames=vm.OtherFiles.Where(x=>!x.IsValidSize(30)).Select(x => x.FileName);
+                    var fileNames=vm.OtherFiles.Where(x=>!x.IsValidSize(300)).Select(x => x.FileName);
                     ModelState.AddModelError("OtherFiles", string.Join(", ", fileNames)+ "must be less than 300kb");
                 }
             }
@@ -42,7 +47,7 @@ namespace UniqloMVC.Areas.Admin.Controllers
             {
                 if(!vm.CoverFile.IsValidType("image"))
                     ModelState.AddModelError("CoverFile", "File type must be an image");
-                if (!vm.CoverFile.IsValidSize(300))
+                if (vm.CoverFile.IsValidSize(300))
                     ModelState.AddModelError("CoverFile", "File type must be less than 300 kb");
                 
             }
@@ -51,9 +56,27 @@ namespace UniqloMVC.Areas.Admin.Controllers
 
             Product product = vm;//in Product
             product.CoverImage= await vm.CoverFile.UploadAsync("wwwroot", "imgs", "products");
-
             await _context.Products.AddAsync(product);
             await _context.SaveChangesAsync();
+
+            foreach(var item in vm.OtherFiles)
+            {
+                var Filepath=Path.GetRandomFileName()+Path.GetExtension(item.FileName);
+                using(Stream stream = System.IO.File.Create(Path.Combine(_env.WebRootPath,"imgs","products",Filepath)))
+                {
+                    await item.CopyToAsync(stream);   
+                }
+
+                ProductImage productImage = new()
+                {
+                    FileUrl = Filepath,
+                    ProductId = product.Id
+                };
+
+                await _context.ProductImages.AddAsync(productImage);
+                await _context.SaveChangesAsync();
+            }
+
             return RedirectToAction(nameof(Index));
         }
 

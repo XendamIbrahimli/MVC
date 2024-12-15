@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UniqloMVC.DataAccess;
 
@@ -11,9 +12,11 @@ using UniqloMVC.DataAccess;
 namespace UniqloMVC.Migrations
 {
     [DbContext(typeof(UniqloDbContext))]
-    partial class UniqloDbContextModelSnapshot : ModelSnapshot
+    [Migration("20241215050259_CreateProductRatingTable")]
+    partial class CreateProductRatingTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -224,39 +227,6 @@ namespace UniqloMVC.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Products");
-                });
-
-            modelBuilder.Entity("UniqloMVC.Models.ProductComment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Comment")
-                        .HasMaxLength(200)
-                        .HasColumnType("nvarchar(200)");
-
-                    b.Property<DateTime>("CreatedTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("ProductId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("ProductComments");
                 });
 
             modelBuilder.Entity("UniqloMVC.Models.ProductImage", b =>
@@ -482,23 +452,6 @@ namespace UniqloMVC.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("UniqloMVC.Models.ProductComment", b =>
-                {
-                    b.HasOne("UniqloMVC.Models.Product", "Product")
-                        .WithMany("Comments")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("UniqloMVC.Models.User", "User")
-                        .WithMany("Comments")
-                        .HasForeignKey("UserId");
-
-                    b.Navigation("Product");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("UniqloMVC.Models.ProductImage", b =>
                 {
                     b.HasOne("UniqloMVC.Models.Product", "Product")
@@ -534,8 +487,6 @@ namespace UniqloMVC.Migrations
 
             modelBuilder.Entity("UniqloMVC.Models.Product", b =>
                 {
-                    b.Navigation("Comments");
-
                     b.Navigation("Images");
 
                     b.Navigation("Ratings");
@@ -543,8 +494,6 @@ namespace UniqloMVC.Migrations
 
             modelBuilder.Entity("UniqloMVC.Models.User", b =>
                 {
-                    b.Navigation("Comments");
-
                     b.Navigation("Ratings");
                 });
 #pragma warning restore 612, 618

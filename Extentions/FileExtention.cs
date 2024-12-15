@@ -6,7 +6,7 @@
             file.ContentType.StartsWith(type);
 
         public static bool IsValidSize(this IFormFile file, int kb) =>
-            file.Length <= kb * 1024;
+            file.Length >=kb * 1024;
 
         public static async Task<string> UploadAsync(this IFormFile file, params string[] paths)
         {
