@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using System.Text.Json;
 using UniqloMVC.DataAccess;
+using UniqloMVC.ViewModel.Basket;
 using UniqloMVC.ViewModel.Details;
 
 namespace UniqloMVC.Controllers
@@ -21,7 +23,7 @@ namespace UniqloMVC.Controllers
         }
         public async Task<IActionResult> Details(int Id)
         {
-            var data = await _context.Products.Where(x => x.Id == Id && !x.IsDeleted).Include(x => x.Images).Include(x=>x.Ratings).Include(x=>x.Comments).Select(x=>new ProductDetailsVM
+            var data = await _context.Products.Where(x => x.Id == Id && !x.IsDeleted).Include(x => x.Images).Include(x=>x.Ratings).Include(x=>x.Comments).ThenInclude(x=>x.User).Select(x=>new ProductDetailsVM
             {
                 ProductId=Id,
                 Name = x.Name,
@@ -80,6 +82,7 @@ namespace UniqloMVC.Controllers
             {
                 await _context.ProductComments.AddAsync(new Models.ProductComment
                 {
+                    UserName
                     UserId = userId,
                     ProductId = productId,
                     Comment = comment,
@@ -92,6 +95,26 @@ namespace UniqloMVC.Controllers
             }
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Details), new {Id=productId});
+        }
+
+        public async Task<IActionResult> AddBasket(int id)
+        {
+            var basketItems = JsonSerializer.Deserialize<List<BasketProductItemVM>>(Request.Cookies["basket"] ?? "[]");
+            var item = basketItems.FirstOrDefault(x=>x.Id==id);
+            if(item is null)
+            {
+                basketItems.Add(new BasketProductItemVM
+                {
+                    Count=1,
+                    Id=id
+                });
+            }
+            else
+                item.Count++;
+
+
+            Response.Cookies.Append("basket",JsonSerializer.Serialize(basketItems));
+            return Ok();
         }
     }
 }

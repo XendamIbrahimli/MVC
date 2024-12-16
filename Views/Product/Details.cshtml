@@ -216,6 +216,9 @@
                                     @foreach (var item in Model.Comments)
                                     {
                                         <div class="review__item">
+                                            <div class="review__name">
+                                                <h4>@item.User.UserName</h4>
+                                            </div>
                                             <div class="review__date">
                                                 <span>@item.CreatedTime.ToString("dd MMM, yyyy 'at' h:mm tt")</span>
                                             </div>
